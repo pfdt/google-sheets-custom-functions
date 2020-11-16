@@ -1,3 +1,7 @@
+// Google Sheets custom functions - lookups
+// source : https://github.com/pfdt/google-sheets-custom-functions
+
+
 /**
  * Get the head row value of a searched term, from a multi-dimensional range.
  *

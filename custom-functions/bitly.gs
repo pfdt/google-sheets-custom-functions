@@ -1,3 +1,6 @@
+// Google Sheets custom functions - bit.ly
+// source : https://github.com/pfdt/google-sheets-custom-functions
+
 // FUNCTIONS CONFIGURATION : fill up the API infos to get the functions works.
 // To get these informations, sign in to your bit.ly account and go to : Profile menu > Profile Settings > Generic Access Token.
 var apiKey = 'YOU_BITLY_APIKEY';

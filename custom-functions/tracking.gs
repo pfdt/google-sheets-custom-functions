@@ -1,3 +1,6 @@
+// Google Sheets custom functions - tracking
+// source : https://github.com/pfdt/google-sheets-custom-functions
+
 /**
  * Generate a Google UTM tag to append to a link.
  *

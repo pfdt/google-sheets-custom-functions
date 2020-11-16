@@ -1,3 +1,7 @@
+// Google Sheets custom functions - text converters
+// source : https://github.com/pfdt/google-sheets-custom-functions
+
+
 /**
  * Replace every accented characters by non-accented version.
  *
@@ -111,6 +115,26 @@ function decodeUTF8( text ) {
         text = text.replace(new RegExp(UTF8ent[i][1], 'g'), UTF8ent[i][0]);
 
     return text;
+}
+
+
+/**
+ * Convert a value into a string.
+ *
+ * @param {"3.33"} value
+ *        Value to convert
+ *
+ * @customfunction
+ */
+
+function toString( value ) {
+    return value === null || IsMissing(value) ? "" : value.toString();
+}
+function IsMissing(x) {
+    return isUndefined(x);
+}
+function isUndefined(arg) {
+    return typeof arg === "undefined";
 }
 
 

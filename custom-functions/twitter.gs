@@ -1,14 +1,17 @@
+// Google Sheets custom functions - twitter
+// source : https://github.com/pfdt/google-sheets-custom-functions
+
 // FUNCTIONS CONFIGURATION : fill up the API infos to get the functions works.
-// To get these informations, go to https://developer.twitter.com/apps en then : sign-in, create a new application, fill-in the application details and create an access token with "read only" access.
+// To get these informations, go to https://developer.twitter.com/apps and then : sign-in, create a new application, fill-in the application details and create an access token with "read only" access.
 var CONSUMER_KEY = 'YOUR_CONSUMER_KEY'; // Register your app with Twitter.
 var CONSUMER_SECRET = 'YOUR_CONSUMER_SECRET'; // Register your app with Twitter.
 
 
 /**
- * Get the number of published tweets with the specified searched term or hashtag (from the 7 previous days maximum).
+ * Get the number of published tweets with the specified searched term, hashtag or twitter query (from the 7 previous days maximum).
  *
  * @param {"#googlesheets"} search
- *        Searched term or hashtag
+ *        Searched term, hashtag or twitter query
  *
  * @param {"2020-01-31"} endDate
  *        Limit the search to this end date, using the format : YYYY-MM-DD (optional)
@@ -16,7 +19,7 @@ var CONSUMER_SECRET = 'YOUR_CONSUMER_SECRET'; // Register your app with Twitter.
  * @customfunction
  */
 
-function TWITTERhashtagCount( search, endDate ) {
+function TWITTERsearchCount( search, endDate ) {
   
  // Encode consumer key and secret
  var tokenUrl = "https://api.twitter.com/oauth2/token";
