@@ -2,9 +2,8 @@
 // source : https://github.com/pfdt/google-sheets-custom-functions
 
 // FUNCTIONS CONFIGURATION : fill up the API infos to get the functions works.
-// To get these informations, sign in to your bit.ly account and go to : Profile menu > Profile Settings > Generic Access Token.
-var apiKey = 'YOU_BITLY_APIKEY';
-var username = 'YOUR_BITLY_USERNAME';
+// To get these informations, go to https://bitly.is/accesstoken
+var accessToken = 'YOU_BITLY_ACCESS_TOKEN';
 
 
 /**
@@ -22,15 +21,30 @@ function BITLYshortener( url ) {
   if ((url == '') || ( !url.match(/(ftp|http|https):\/\//i))) {
     return '#SOURCE!' ;
   }
-  else {
-    /* REPLACE BEFORE BITLY */
-    url = url.replace(/\s/g,'');
-    url = encodeURIComponent(url);
-    
-    /* SHORTENER */
-    var bitcall = 'http://api.bit.ly/shorten?t=1&version=3&login=' + username + '&apiKey=' + apiKey + '&format=text&longUrl=' + url;
-    var bitlink = UrlFetchApp.fetch(bitcall).getContentText();
-    return bitlink ;
+  else {	
+	/* API CALL */
+	var group_guid = BITLYGroupId(); // you can alos run the function and paste here the group_guid value
+	var fetchUrl = 'https://api-ssl.bitly.com/v4/shorten';
+	var headers = {
+		'Authorization': 'Bearer '+ accessToken,
+		'Content-Type': 'application/json',
+	};
+	var payload = {
+		//'domain' : 'bit.ly',
+		//'title' : '',
+		//'tags' : ['', ''],
+		'group_guid' : group_guid,
+		'long_url' : url
+	};
+	var params = {
+		'method' : 'post',
+		'headers' : headers,
+		'payload' : JSON.stringify(payload),
+		'muteHttpExceptions' : true
+	};
+	var response = UrlFetchApp.fetch(fetchUrl, params);
+	var BITLYshort_url = JSON.parse(response.getContentText()).link;
+	return BITLYshort_url;
   }
 }
 
@@ -50,19 +64,27 @@ function BITLYunshortener( url ) {
   if ((url == '') || ( !url.match(/(ftp|http|https):\/\//i))) {
     return '#SOURCE!' ;
   }
-  else {    
-    /* REPLACE BEFORE BITLY */
-    url = url.replace(/\s/g,'');
-    url = encodeURIComponent(url);
-    
-    /* UNSHORTENER */
-    var bitcall = 'https://api-ssl.bitly.com/v3/expand?login=' + username + '&apiKey=' + apiKey + '&format=text&shortUrl=' + url;
-    var responseApi = UrlFetchApp.fetch(bitcall);
-
-    // Parse the JSON encoded Twitter API response
-    var bitlink = JSON.parse(responseApi.getContentText());
-    return bitlink.data.expand[0].long_url
-    
+  else {
+  	/* GET BITLINK_ID */ 
+	var BITLYlink_id = url.substring(url.indexOf('//')+2);
+	
+    /* API CALL */
+	var fetchUrl = 'https://api-ssl.bitly.com/v4/expand'
+	var headers = {
+		'Authorization': 'Bearer '+ accessToken,
+		'Content-Type': 'application/json',
+	};
+	var payload = {
+		'bitlink_id' : BITLYlink_id
+	};
+	var params = {
+		'method' : 'post',
+		'headers' : headers,
+		'payload' : JSON.stringify(payload),
+	};
+	var response = UrlFetchApp.fetch(fetchUrl, params);
+	var BITLYlong_url = JSON.parse(response.getContentText()).long_url;
+	return BITLYlong_url;  
   }
 }
 
@@ -83,13 +105,33 @@ function BITLYclick( url ) {
     return '#SOURCE!' ;
   }
   else {
-    /* REPLACE BEFORE BITLY */
-    url = url.replace(/\s/g,'');
-    url = encodeURIComponent(url);
+    /* GET BITLINK_ID */ 
+	var BITLYlink_id = url.substring(url.indexOf('//')+2);
     
-    /* SHORTENER */
-    var bitcall = 'https://api-ssl.bitly.com/v3/link/clicks?format=txt&unit=day&units=-1&rollup=true&access_token=fa98ec7a674af0d805527cb7851dee6c5ccadc63&link=' + url;
-    var bitlink = UrlFetchApp.fetch(bitcall).getContentText();
-    return bitlink ;
+    /* API CALL */
+	var fetchUrl = 'https://api-ssl.bitly.com/v4/bitlinks/' + BITLYlink_id + '/clicks/summary';
+	var headers = {
+		'Authorization': 'Bearer '+ accessToken,
+		'Content-Type': 'application/json',
+	};
+	var params = {
+		'method' : 'get',
+		'headers' : headers,
+	};
+	var response = UrlFetchApp.fetch(fetchUrl, params);
+	var BITLYlink_click = JSON.parse(response.getContentText()).total_clicks;
+	return BITLYlink_click;   
   }
+}
+
+
+// Retrive the bit.ly groupId (required for the BITLYshortener function)
+function BITLYGroupId() {
+  var headers = {'Authorization' : 'Bearer '+accessToken};
+  var params = {'headers' : headers};
+  var fetchUrl = 'https://api-ssl.bitly.com/v4/groups';
+  var response = UrlFetchApp.fetch(fetchUrl, params);
+  var group_guid = JSON.parse(response.getContentText()).groups[0].guid;
+  Logger.log(group_guid)
+  return group_guid
 }
