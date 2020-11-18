@@ -23,7 +23,8 @@ function BITLYshortener( url ) {
   }
   else {	
 	/* API CALL */
-	var group_guid = BITLYGroupId(); // you can alos run the function and paste here the group_guid value
+	// var accessToken = 'YOU_BITLY_ACCESS_TOKEN'; // activate this line if you want to overwrite the global accessToken variable (convenient if you want to use different or multiple bitly accounts.
+	var group_guid = BITLYGroupId(accessToken); // you can alos run the function and paste here the group_guid value
 	var fetchUrl = 'https://api-ssl.bitly.com/v4/shorten';
 	var headers = {
 		'Authorization': 'Bearer '+ accessToken,
@@ -69,6 +70,7 @@ function BITLYunshortener( url ) {
 	var BITLYlink_id = url.substring(url.indexOf('//')+2);
 	
     /* API CALL */
+	// var accessToken = 'YOU_BITLY_ACCESS_TOKEN'; // activate this line if you want to overwrite the global accessToken variable (convenient if you want to use different or multiple bitly accounts.
 	var fetchUrl = 'https://api-ssl.bitly.com/v4/expand'
 	var headers = {
 		'Authorization': 'Bearer '+ accessToken,
@@ -109,6 +111,7 @@ function BITLYclick( url ) {
 	var BITLYlink_id = url.substring(url.indexOf('//')+2);
     
     /* API CALL */
+	// var accessToken = 'YOU_BITLY_ACCESS_TOKEN'; // activate this line if you want to overwrite the global accessToken variable (convenient if you want to use different or multiple bitly accounts.
 	var fetchUrl = 'https://api-ssl.bitly.com/v4/bitlinks/' + BITLYlink_id + '/clicks/summary';
 	var headers = {
 		'Authorization': 'Bearer '+ accessToken,
@@ -126,7 +129,7 @@ function BITLYclick( url ) {
 
 
 // Retrive the bit.ly groupId (required for the BITLYshortener function)
-function BITLYGroupId() {
+function BITLYGroupId(accessToken) {
   var headers = {'Authorization' : 'Bearer '+accessToken};
   var params = {'headers' : headers};
   var fetchUrl = 'https://api-ssl.bitly.com/v4/groups';
