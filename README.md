@@ -35,6 +35,7 @@ _Twitter API credentials are required, see the configuration steps on the file_
 ### lookups
 - __headLookup__ : Get the head row value of a searched term, from a multi-dimensional range.
 - __rangeLookup__ : Get the lookup (vertical) value from a multi-dimensional range.
+- __crossLookup__ : Get the the crossing value between a vertical and an horizontal search from a multi-dimensional range (Vloolup and Hlookup combined), with two possible search for both vertical and horizontal lookups.
 
 
 ### text converters
