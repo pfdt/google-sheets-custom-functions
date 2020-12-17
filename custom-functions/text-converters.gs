@@ -29,7 +29,7 @@ function removeACCENT( text ) {
  */
 
 function encodeURI( text ) {
-return encodeURIComponent(text) ;
+  return encodeURIComponent(text) ;
 }
 
 
@@ -128,13 +128,45 @@ function decodeUTF8( text ) {
  */
 
 function toString( value ) {
-    return value === null || IsMissing(value) ? "" : value.toString();
+  return value === null || IsMissing(value) ? "" : ConversionProcess(value);
 }
 function IsMissing(x) {
-    return isUndefined(x);
+  return isUndefined(x);
 }
 function isUndefined(arg) {
-    return typeof arg === "undefined";
+  return typeof arg === "undefined";
+}
+function ConversionProcess(x) {
+var result;
+var t = x.toString();
+const decimal_regex = RegExp('^[0-9]+[.,]?[0-9]*$');
+const scientific_regex = RegExp('^[0-9]*[.,]?[0-9]+[eE][\-\+]?[0-9]+');
+
+if ( decimal_regex.test(t) ) {
+  result = t;
+}
+else if ( scientific_regex.test(t) ) {
+  const sign_regex = /[\-\+]/;
+  var sign = sign_regex.exec(t) || '+';
+  sign = sign[0];
+  var n_parts = t.split(/[eE][\-\+]?/);
+  var coeff = n_parts[0];
+  var exponent = n_parts[1];
+  
+  if ( exponent > 300 ) {
+    throw 'The exponent is to large';
+  }
+  if ( sign == '-' ) {
+    result = '0.'+('0').repeat(exponent-1)+coeff;
+  }
+  else {
+    result = coeff * 10 ** exponent;
+  }
+}
+else {
+  throw 'Error in number format';
+}
+return result
 }
 
 
