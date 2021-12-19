@@ -2,6 +2,18 @@
 
 A collection of custom functions made for Google Sheets / Google Scripts.
 
+Summary :
+- [CUSTOM FUNCTIONS LIST](#custom-functions-list)
+  - [bit.ly](#bitly)
+  - [twitter](#twitter)
+  - [tracking](#tracking)
+  - [lookups](#lookups)
+  - [text converters](#text-converters)
+- [APPS SCRIPT LIST](#apps-script-list)
+  - [airtable sync](#airtable-sync)
+  - [tweet logger](#tweet-logger)
+
+---
 
 ## CUSTOM FUNCTIONS LIST
 
@@ -49,6 +61,7 @@ _Twitter API credentials are required, see the configuration steps on the file_
 - __toString__ : Convert a value into a string.
 
 
+---
 ##  APPS SCRIPT LIST
 
 How to use it ?
@@ -56,10 +69,19 @@ How to use it ?
 - Copy paste the app you want.
 - Read and follow the Script configuration steps.
 
+
+### airtable sync
+__This script sync your AirTable datas to a Google Sheets document__
+
+It can be used with a clock trigger to have automatic updates.
+
+Options available : sync one or multiple bases/views, sync all columns or only selected ones, store attachments to Google Drive...
+
+The code is an improved version of [robiningelbrecht](https://github.com/robiningelbrecht/airtable-google-sheets-backup) work.
+
 ### tweet logger
 __This script log tweets informations to a Google Sheets document, based on searched term, hashtag or twitter query.__
 
 It can be used with a clock trigger to have automatic updates.
 
 The tweet informations logged are : date, username, user handle, tweet id, user followers count, user followings count, tweet text, retweets count, likes count, tweet status, RT reply user, RT reply id.
-
