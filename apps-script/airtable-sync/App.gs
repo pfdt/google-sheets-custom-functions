@@ -24,11 +24,13 @@ class App {
 	}
   }
 
-  run() {
+run() {
 	this.syncs.forEach(sync => {
+
 	  const airtableRecords = new AirtableRecords(
 		this.client.getRecords(sync.getBaseId(), sync.getTableName(), sync.getViewName(), sync.getSelectedFields()),
-		sync.getAttachmentFields()
+		sync.getAttachmentFields(),
+		sync.getSelectedFields()
 	  );
 
 	  if (airtableRecords.isEmpty()) {
@@ -38,10 +40,11 @@ class App {
 
 	  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
 	  const sheet = new Sheet(spreadsheet.getSheetByName(sync.getTableName()) || spreadsheet.insertSheet(sync.getTableName()));
+	  const fieldNames = airtableRecords.getFieldNames();
 
 	  sheet.clear();
-	  sheet.setHeader(airtableRecords.getFieldNames());
-	  sheet.setRows(airtableRecords.getData());
+	  sheet.setHeader(fieldNames);
+	  sheet.setRows(airtableRecords.getData(fieldNames));
 
 	  // Download and save attachments, if any.
 	  for (const [id, urls] of Object.entries(airtableRecords.getAttachmentUrls())) {

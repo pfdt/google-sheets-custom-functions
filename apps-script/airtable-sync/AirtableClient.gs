@@ -42,7 +42,6 @@ class AirtableClient {
 	  const response = JSON.parse(UrlFetchApp.fetch(url, options));
 	  records = [...records, ...response.records];
 
-
 	  offset = response.offset || null;
 	}
 	return records;
