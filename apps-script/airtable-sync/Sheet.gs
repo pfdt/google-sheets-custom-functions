@@ -14,10 +14,6 @@ class Sheet {
   }
 
   setRows(rows) {
-	for (let i = 0; i < rows.length; i++) {
-	  for (let j = 0; j < rows[i].length; j++) {
-		this.sheet.getRange(i + 2, j + 1).setNumberFormat('@STRING@').setValue(rows[i][j]);
-	  }
-	}
+	this.sheet.getRange(2,1,rows.length,rows[0].length).setNumberFormat('@STRING@').setValues(rows);
   }
 }
