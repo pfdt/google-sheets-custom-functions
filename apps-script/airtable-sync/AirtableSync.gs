@@ -1,29 +1,29 @@
 class AirtableSync {
-  constructor(baseId, tableName, viewName, selectedFields, attachmentFields) {
-	this.baseId = baseId;
-	this.tableName = tableName;
-	this.viewName = viewName;
-	this.selectedFields = selectedFields || [];
-	this.attachmentFields = attachmentFields || [];
+  constructor(sheetNAME, baseID, tableID, selectedFields, attachmentFields) {
+    this.sheetNAME = sheetNAME;
+    this.baseID = baseID;
+    this.tableID = tableID;
+    this.selectedFields = selectedFields || [];
+    this.attachmentFields = attachmentFields || [];
   }
 
-  getBaseId() {
-	return this.baseId;
+  getSheetNAME() {
+    return this.sheetNAME;
   }
 
-  getTableName() {
-	return this.tableName;
+  getBaseID() {
+    return this.baseID;
   }
 
-  getViewName() {
-	return this.viewName;
+  getTableID() {
+    return this.tableID;
   }
 
   getSelectedFields() {
-	return this.selectedFields;
+    return this.selectedFields;
   }
 
   getAttachmentFields() {
-	return this.attachmentFields;
+    return this.attachmentFields;
   }
 }

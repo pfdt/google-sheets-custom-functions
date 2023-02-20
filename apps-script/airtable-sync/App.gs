@@ -1,67 +1,59 @@
-/*
-Code based on github.com/robiningelbrecht/airtable-google-sheets-backup
-
-Add here your credentials and Airtable base to sync.
-
-Warning // This script cannot read Airtable "linked records. The workaround is to create a "formula records" column equal to the linked records (for each "linked records") and ignore "linked records" columns.
-*/
-
-const API_KEY = 'keyXXXXXXXXXXXX'; // ADD YOUR AIRTABLE API KEY
+const TOKEN = 'XXXXXX'; // ADD YOUR AIRTABLE PERSONAL ACCESS TOKEN
 const ATTACHMENTS_ROOT_FOLDER_ID = '' // ADD THE GOOGLE DRIVE FOLDER ID WHERE YOU WANT TO STORE ATTACHMENTS (OPTIONAL)
 
 class App {
-  constructor() {
-	this.client = new AirtableClient(API_KEY);
-	this.syncs = [
-	  // ADD ONE LINE FOR EACH AIRTABLE TABLE/VIEW TO SYNC, USING FOLLOWING TEMPLATE
-	  // TEMPLATE TO SYNC THE ALL TABLE: new AirtableSync('BaseId', 'TableName', 'ViewName', [], []),
-	  // TEMPLATE TO SYNC ONLY SPECIFIC FIELDS: new AirtableSync('BaseId', 'TableName', 'ViewName', ['FieldName-1', 'FieldName-2'], []),
-	  // TEMPLATE TO IMPORT ATTACHMENT FIELDS: new AirtableSync('BaseId', 'TableName', 'ViewName', [], ['AttachmentFieldName-1', 'AttachmentFieldName-2']),
-	  new AirtableSync('appXXXXXXXX', 'XXXXXXXX', 'viwXXXXXXXX', [], []),
-	];
-	if (ATTACHMENTS_ROOT_FOLDER_ID !== null && ATTACHMENTS_ROOT_FOLDER_ID !== '') {
-	  this.attachmentService = new AttachmentService(ATTACHMENTS_ROOT_FOLDER_ID);
+	constructor() {
+		this.client = new AirtableClient(TOKEN);
+		this.syncs = [
+			// ADD ONE LINE FOR EACH AIRTABLE TABLE/VIEW TO SYNC, USING FOLLOWING TEMPLATE
+			// TEMPLATE TO SYNC THE ALL TABLE: new AirtableSync('SheetNAME_destination', 'AirtableBaseID', 'AirtableTableID', [], []),
+			// TEMPLATE TO SYNC ONLY SPECIFIC FIELDS: new AirtableSync('SheetNAME_destination', 'AirtableBaseID', 'AirtableTableID', ['FieldName-1', 'FieldName-2'], []),
+			// TEMPLATE TO IMPORT ATTACHMENT FIELDS: new AirtableSync('SheetNAME_destination', 'AirtableBaseID', 'AirtableTableID', [], ['AttachmentFieldName-1', 'AttachmentFieldName-2']),
+			new AirtableSync('YOUR_SHEET_NAME', 'appXXXXXX', 'tblXXXXXX', [], []),
+		];
+		if (ATTACHMENTS_ROOT_FOLDER_ID !== null && ATTACHMENTS_ROOT_FOLDER_ID !== '') {
+			this.attachmentService = new AttachmentService(ATTACHMENTS_ROOT_FOLDER_ID);
+		}
 	}
-  }
 
-run() {
-	this.syncs.forEach(sync => {
+	run() {
+		this.syncs.forEach(sync => {
 
-	  const airtableRecords = new AirtableRecords(
-		this.client.getRecords(sync.getBaseId(), sync.getTableName(), sync.getViewName(), sync.getSelectedFields()),
-		sync.getAttachmentFields(),
-		sync.getSelectedFields()
-	  );
+			const airtableRecords = new AirtableRecords(
+				this.client.getRecords(sync.getBaseID(), sync.getTableID(), sync.getSelectedFields()),
+				sync.getAttachmentFields(),
+				sync.getSelectedFields()
+			);
 
-	  if (airtableRecords.isEmpty()) {
-		// Shortcut and do not override sheet with "empty data".
-		return;
-	  }
+			if (airtableRecords.isEmpty()) {
+				// Shortcut and do not override sheet with "empty data".
+				return;
+			}
 
-	  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-	  const sheet = new Sheet(spreadsheet.getSheetByName(sync.getTableName()) || spreadsheet.insertSheet(sync.getTableName()));
-	  const fieldNames = airtableRecords.getFieldNames();
+			const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+			const sheet = new Sheet(spreadsheet.getSheetByName(sync.getSheetNAME()) || spreadsheet.insertSheet(sync.getSheetNAME()));
+			const fieldNames = airtableRecords.getFieldNames();
 
-	  sheet.clear();
-	  sheet.setHeader(fieldNames);
-	  sheet.setRows(airtableRecords.getData(fieldNames));
+			sheet.clear();
+			sheet.setHeader(fieldNames);
+			sheet.setRows(airtableRecords.getData(fieldNames));
 
-	  // Download and save attachments, if any.
-	  for (const [id, urls] of Object.entries(airtableRecords.getAttachmentUrls())) {
-		this.attachmentService.downloadAndSave(id, urls[0], sync.getTableName());
-	  }
-	});
-  }
+			// Download and save attachments, if any.
+			for (const [id, urls] of Object.entries(airtableRecords.getAttachmentUrls())) {
+				this.attachmentService.downloadAndSave(id, urls[0], sync.getSheetNAME());
+			}
+		});
+	}
 }
 
 function run() {
-  const app = new App();
-  app.run();
+	const app = new App();
+	app.run();
 }
 
 function onOpen() {
-  const ui = SpreadsheetApp.getUi();
-  ui.createMenu('AirtableSync')
-	.addItem('Run sync', 'run')
-	.addToUi();
+	const ui = SpreadsheetApp.getUi();
+	ui.createMenu('AirtableSync')
+		.addItem('Run sync', 'run')
+		.addToUi();
 }
